@@ -1,0 +1,240 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("user") // "admin", "user"
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String?
+  type      String   @default("text") // text, textarea, image, boolean, json, color
+  group     String   @default("general") // general, seo, social, appearance, contact
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  type        String    @default("book") // book, article, gallery, work
+  description String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  books       Book[]
+  articles    Article[]
+  galleries   Gallery[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Book {
+  id              Int                @id @default(autoincrement())
+  title           String
+  slug            String             @unique
+  subtitle        String?
+  categoryId      Int?
+  category        Category?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  description     String?
+  synopsis        String?
+  coverImage      String?
+  coverImage2     String?
+  isbn            String?
+  price           Float?
+  currency        String             @default("USD")
+  publicationDate DateTime?
+  pages           Int?
+  language        String             @default("English")
+  publisher       String?
+  format          String?
+  praise          String?
+  excerpts        String?
+  isFeatured      Boolean            @default(false)
+  isPublished     Boolean            @default(true)
+  sortOrder       Int                @default(0)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  images          BookImage[]
+  reviews         BookReview[]
+  purchaseLinks   BookPurchaseLink[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model BookImage {
+  id         Int      @id @default(autoincrement())
+  bookId     Int
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  imagePath  String
+  caption    String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model BookReview {
+  id             Int      @id @default(autoincrement())
+  bookId         Int
+  book           Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  reviewerName   String
+  reviewerSource String?
+  content        String
+  rating         Int?
+  isFeatured     Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BookPurchaseLink {
+  id         Int      @id @default(autoincrement())
+  bookId     Int
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  storeName  String
+  url        String
+  priceLabel String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Article {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  categoryId      Int?
+  category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  excerpt         String?
+  body            String?
+  coverImage      String?
+  readingTime     Int?
+  isFeatured      Boolean   @default(false)
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  views           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Work {
+  id           Int       @id @default(autoincrement())
+  title        String
+  slug         String    @unique
+  type         String    @default("research") // research, political, literary, social, international
+  description  String?
+  externalLink String?
+  date         DateTime?
+  tags         String? // Stored as comma-separated or JSON string
+  isPublished  Boolean   @default(true)
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Gallery {
+  id          Int            @id @default(autoincrement())
+  title       String
+  slug        String         @unique
+  description String?
+  type        String         @default("photo") // photo, video
+  album       String?
+  categoryId  Int?
+  category    Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  isPublished Boolean        @default(true)
+  sortOrder   Int            @default(0)
+  media       GalleryMedia[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model GalleryMedia {
+  id        Int      @id @default(autoincrement())
+  galleryId Int
+  gallery   Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  filePath  String
+  type      String   @default("image") // image, video
+  caption   String?
+  altText   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String
+  subject     String?
+  inquiryType String?
+  message     String
+  isRead      Boolean   @default(false)
+  isReplied   Boolean   @default(false)
+  isSpam      Boolean   @default(false)
+  repliedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model HomepageSection {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // hero, about_preview, featured_books, quote, works, latest_article, newsletter
+  title     String?
+  subtitle  String?
+  content   String?
+  image     String?
+  buttonText String?
+  buttonLink String?
+  extraData String?  // JSON string
+  isVisible Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Page {
+  id              Int      @id @default(autoincrement())
+  title           String
+  slug            String   @unique
+  body            String?
+  isPublished     Boolean  @default(true)
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model NavigationItem {
+  id        Int              @id @default(autoincrement())
+  label     String
+  url       String
+  location  String           @default("header") // header, footer
+  sortOrder Int              @default(0)
+  isVisible Boolean          @default(true)
+  parentId  Int?
+  parent    NavigationItem?  @relation("NavHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  NavigationItem[] @relation("NavHierarchy")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
