@@ -1,6 +1,8 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
+import { Sparkles } from "lucide-react";
 import GalleryGrid from "@/components/GalleryGrid";
+import ScrollReveal from "@/components/ScrollReveal";
 
 export const revalidate = 0;
 
@@ -21,18 +23,18 @@ export default async function GalleryPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 space-y-12">
-      <div className="space-y-4 max-w-2xl">
-        <span className="section-label">Media Archive</span>
-        <h1 className="text-editorial-title font-heading text-forest">
+    <div className="w-full px-6 md:px-10 lg:px-12 py-16 md:py-24 space-y-16">
+      <ScrollReveal variant="editorialReveal" className="space-y-5 max-w-3xl border-b border-border-editorial pb-10">
+        <h1 className="text-editorial-hero font-heading text-forest font-medium">
           Events &amp; Moments
         </h1>
-        <p className="text-text-secondary text-sm leading-relaxed">
+        <p className="text-editorial-lead text-text-secondary font-light">
           A visual record of book launches, philosophical readings, lectures, and academic awards from literary houses worldwide.
         </p>
-      </div>
+      </ScrollReveal>
 
       <GalleryGrid galleries={galleries} />
     </div>
   );
 }
+

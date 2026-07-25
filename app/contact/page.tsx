@@ -1,7 +1,8 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import ContactForm from "@/components/ContactForm";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Sparkles } from "lucide-react";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -48,15 +49,14 @@ export default async function ContactPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <div className="w-full px-6 md:px-10 lg:px-12 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
       {/* Contact Info Sidebar */}
-      <div className="lg:col-span-5 space-y-10">
+      <ScrollReveal variant="editorialReveal" className="lg:col-span-5 space-y-10">
         <div className="space-y-4">
-          <span className="section-label">Get in Touch</span>
-          <h1 className="text-editorial-title font-heading text-forest">
+          <h1 className="text-editorial-hero font-heading text-forest font-medium">
             Correspondence
           </h1>
-          <p className="text-text-secondary text-sm leading-relaxed max-w-sm">
+          <p className="text-editorial-lead text-text-secondary max-w-sm font-light">
             For academic collaborations, lecturing schedules, publishing rights, or media inquiries, please get in touch.
           </p>
         </div>
@@ -64,13 +64,13 @@ export default async function ContactPage() {
         {/* Details List */}
         <div className="space-y-6">
           <div className="flex items-start gap-4">
-            <span className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-forest shrink-0">
-              <Mail className="w-4 h-4" />
+            <span className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-forest shrink-0 shadow-xs">
+              <Mail className="w-4 h-4 text-gold" />
             </span>
             <div className="space-y-1">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-text-tertiary">Email Address</span>
-              <p className="text-sm font-semibold text-forest">
-                <a href={`mailto:${contactEmail}`} className="hover:underline">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-tertiary font-body">Email Address</span>
+              <p className="text-base font-semibold text-forest">
+                <a href={`mailto:${contactEmail}`} className="hover:underline hover:text-gold transition-colors">
                   {contactEmail}
                 </a>
               </p>
@@ -79,24 +79,24 @@ export default async function ContactPage() {
 
           {contactPhone && (
             <div className="flex items-start gap-4">
-              <span className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-forest shrink-0">
-                <Phone className="w-4 h-4" />
+              <span className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-forest shrink-0 shadow-xs">
+                <Phone className="w-4 h-4 text-gold" />
               </span>
               <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-text-tertiary">Phone Number</span>
-                <p className="text-sm font-semibold text-forest">{contactPhone}</p>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-tertiary font-body">Phone Number</span>
+                <p className="text-base font-semibold text-forest">{contactPhone}</p>
               </div>
             </div>
           )}
 
           {contactAddress && (
             <div className="flex items-start gap-4">
-              <span className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-forest shrink-0">
-                <MapPin className="w-4 h-4" />
+              <span className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-forest shrink-0 shadow-xs">
+                <MapPin className="w-4 h-4 text-gold" />
               </span>
               <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-text-tertiary">Mailing Address</span>
-                <p className="text-sm font-semibold text-forest whitespace-pre-line">{contactAddress}</p>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-tertiary font-body">Mailing Address</span>
+                <p className="text-base font-semibold text-forest whitespace-pre-line leading-relaxed">{contactAddress}</p>
               </div>
             </div>
           )}
@@ -104,14 +104,14 @@ export default async function ContactPage() {
 
         {/* Socials Connection */}
         <div className="space-y-4 pt-6 border-t border-border-editorial">
-          <h4 className="text-[10px] uppercase tracking-widest font-semibold text-text-secondary">Digital Channels</h4>
+          <h4 className="text-[10px] uppercase tracking-[0.25em] font-bold text-text-secondary font-body">Digital Channels</h4>
           <div className="flex space-x-4">
             {socials.twitter && (
               <a
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-forest transition-colors duration-300"
+                className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-gold hover:scale-110 transition-all duration-300 shadow-xs"
                 aria-label="Twitter"
               >
                 <TwitterIcon className="w-4.5 h-4.5" />
@@ -122,7 +122,7 @@ export default async function ContactPage() {
                 href={socials.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-forest transition-colors duration-300"
+                className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-gold hover:scale-110 transition-all duration-300 shadow-xs"
                 aria-label="Instagram"
               >
                 <InstagramIcon className="w-4.5 h-4.5" />
@@ -133,7 +133,7 @@ export default async function ContactPage() {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-soft-ivory border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-forest transition-colors duration-300"
+                className="w-11 h-11 rounded-full bg-warm-white border border-border-editorial flex items-center justify-center text-text-secondary hover:text-forest hover:border-gold hover:scale-110 transition-all duration-300 shadow-xs"
                 aria-label="LinkedIn"
               >
                 <LinkedinIcon className="w-4.5 h-4.5" />
@@ -141,12 +141,13 @@ export default async function ContactPage() {
             )}
           </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Contact Form Section */}
-      <div className="lg:col-span-7">
+      <ScrollReveal variant="fadeUp" delay={0.15} className="lg:col-span-7">
         <ContactForm />
-      </div>
+      </ScrollReveal>
     </div>
   );
 }
+

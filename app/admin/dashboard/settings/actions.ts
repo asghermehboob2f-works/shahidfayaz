@@ -31,6 +31,7 @@ export async function updateHomepageSection(
     image?: string;
     buttonText?: string;
     buttonLink?: string;
+    extraData?: string;
     isVisible?: boolean;
   }
 ) {
@@ -44,6 +45,7 @@ export async function updateHomepageSection(
         image: data.image !== undefined ? data.image : null,
         buttonText: data.buttonText !== undefined ? data.buttonText : null,
         buttonLink: data.buttonLink !== undefined ? data.buttonLink : null,
+        extraData: data.extraData !== undefined ? data.extraData : null,
         isVisible: data.isVisible !== undefined ? data.isVisible : true,
       },
     });

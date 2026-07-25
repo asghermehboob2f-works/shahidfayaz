@@ -1,15 +1,15 @@
 import React from "react";
-import { Award, BookOpen, GraduationCap, MapPin, Globe, Plus } from "lucide-react";
-import Link from "next/link";
+import { Award, GraduationCap, Globe, Sparkles } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 
 export const revalidate = 0;
 
 export default async function AboutPage() {
   const session = await getServerSession(authOptions);
-  
+
   let aboutData = null;
   try {
     const setting = await prisma.setting.findUnique({
@@ -54,113 +54,150 @@ export default async function AboutPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 space-y-24">
-      {/* 1. Page Header / Intro */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
-        <div className="lg:col-span-7 space-y-6">
-          <span className="section-label">Biography</span>
-          <h1 className="text-editorial-title font-heading text-forest">
-            About Shahid Fayaz
-          </h1>
+    <div className="w-full px-6 md:px-10 lg:px-12 py-16 md:py-24 space-y-36">
+      {/* ── 1. EDITORIAL HEADER & BIOGRAPHY SPREAD ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start relative">
+        <ScrollReveal variant="editorialReveal" className="lg:col-span-7 space-y-8">
+          <div className="space-y-3">
+            <h1 className="text-editorial-hero font-heading text-forest font-medium">
+              About Shahid Fayaz
+            </h1>
+          </div>
 
-          <p className="text-editorial-lead text-text-secondary leading-relaxed">
+          <p className="text-editorial-lead text-text-primary leading-relaxed drop-cap-editorial font-heading italic">
             {data.bioLead}
           </p>
-          <div className="space-y-4 text-editorial-body">
+
+          <div className="space-y-6 text-editorial-body">
             {data.bioBody1 && <p>{data.bioBody1}</p>}
             {data.bioBody2 && <p>{data.bioBody2}</p>}
           </div>
-        </div>
+        </ScrollReveal>
 
-        {/* Editorial Photo */}
-        <div className="lg:col-span-5 flex justify-center">
-          <div className="relative w-full max-w-sm aspect-[4/5] overflow-hidden shadow-editorial bg-soft-ivory">
+        {/* Editorial Photo Frame */}
+        <ScrollReveal variant="blurIn" delay={0.2} className="lg:col-span-5 flex justify-center sticky top-32">
+          <div className="relative w-full max-w-md aspect-[4/5] overflow-hidden shadow-editorial-hover bg-soft-ivory rounded-xs border-2 border-gold/40 group">
             <img
               src={data.photoUrl}
-              alt="Shahid Fayaz working in study"
-              className="w-full h-full object-cover"
+              alt="Shahid Fayaz portrait"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-forest/5" />
+            <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/40 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 border border-gold/50 pointer-events-none group-hover:border-gold transition-colors duration-500" />
           </div>
-        </div>
+        </ScrollReveal>
       </div>
 
-      {/* 2. Signature Philosophy Quote */}
+      {/* ── 2. PHILOSOPHICAL QUOTE CARD ── */}
       {(data.quoteText || data.quoteAuthor) && (
-        <section className="bg-soft-ivory py-16 px-8 text-center rounded-sm max-w-4xl mx-auto border border-border-editorial">
-          {data.quoteText && (
-            <blockquote className="font-heading text-xl md:text-2xl italic leading-relaxed text-forest">
-              {data.quoteText}
-            </blockquote>
-          )}
-          {data.quoteAuthor && (
-            <div className="mt-4 text-xs font-semibold uppercase tracking-widest text-gold">
-              — {data.quoteAuthor}
-            </div>
-          )}
-        </section>
+        <ScrollReveal variant="blurIn">
+          <section className="bg-obsidian text-white py-24 px-8 text-center rounded-xs max-w-5xl mx-auto border border-gold/30 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 philosophy-dots opacity-25 pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
+
+            {data.quoteText && (
+              <blockquote className="font-heading text-2xl md:text-4xl italic leading-relaxed text-warm-white font-light max-w-4xl mx-auto">
+                {data.quoteText}
+              </blockquote>
+            )}
+            {data.quoteAuthor && (
+              <div className="mt-8 text-xs font-bold uppercase tracking-[0.3em] text-gold font-body">
+                — {data.quoteAuthor}
+              </div>
+            )}
+          </section>
+        </ScrollReveal>
       )}
 
-      {/* 3. Credentials & Areas Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="border border-border-editorial p-8 rounded-sm space-y-4">
-          <GraduationCap className="w-8 h-8 text-gold" />
-          <h3 className="font-heading text-xl font-semibold text-forest">Education</h3>
-          <ul className="space-y-2 text-xs text-text-secondary leading-relaxed font-body">
-            {data.education.map((item: any, idx: number) => (
-              <li key={idx}><strong>{item.title}</strong><br />{item.subtitle}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="border border-border-editorial p-8 rounded-sm space-y-4">
-          <Award className="w-8 h-8 text-gold" />
-          <h3 className="font-heading text-xl font-semibold text-forest">Fellowships &amp; Prizes</h3>
-          <ul className="space-y-2 text-xs text-text-secondary leading-relaxed font-body">
-            {data.fellowships.map((item: any, idx: number) => (
-              <li key={idx}><strong>{item.title}</strong><br />{item.subtitle}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="border border-border-editorial p-8 rounded-sm space-y-4">
-          <Globe className="w-8 h-8 text-gold" />
-          <h3 className="font-heading text-xl font-semibold text-forest">Social Work</h3>
-          <ul className="space-y-2 text-xs text-text-secondary leading-relaxed font-body">
-            {data.socialWork.map((item: any, idx: number) => (
-              <li key={idx}><strong>{item.title}</strong><br />{item.subtitle}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 4. Timeline Milestone Section */}
-      <section className="space-y-12">
-        <div className="text-center space-y-2">
-          <span className="section-label">Chronology</span>
-          <h2 className="text-editorial-title font-heading text-forest">Timeline of Milestones</h2>
-        </div>
-
-        <div className="max-w-3xl mx-auto relative border-l border-border-editorial pl-8 ml-4 space-y-12">
-          {data.timeline.map((event: any, idx: number) => (
-            <div key={idx} className="relative">
-              {/* Dot indicator */}
-              <span className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full bg-warm-white border-2 border-gold flex items-center justify-center">
-                <span className="w-2 h-2 rounded-full bg-forest" />
-              </span>
-              <div className="space-y-1">
-                <span className="font-heading text-lg font-bold text-gold">{event.year}</span>
-                <h4 className="font-heading text-lg font-semibold text-forest leading-snug">
-                  {event.title}
-                </h4>
-                <p className="text-xs text-text-secondary leading-relaxed font-body">
-                  {event.description}
-                </p>
+      {/* ── 3. ACADEMIC & SOCIAL REGISTRY ── */}
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8" staggerDelay={0.15}>
+        <StaggerItem>
+          <div className="border border-border-editorial/80 bg-warm-white/80 backdrop-blur-md p-8 rounded-xs space-y-6 hover:border-gold/60 transition-all duration-300 shadow-editorial hover:shadow-editorial-hover h-full flex flex-col justify-between">
+            <div className="space-y-6">
+              <div className="w-12 h-12 rounded-full bg-forest/10 flex items-center justify-center text-gold">
+                <GraduationCap className="w-6 h-6 text-gold" />
               </div>
+              <h3 className="font-heading text-2xl font-semibold text-forest">Education</h3>
+              <ul className="space-y-4 text-xs text-text-secondary leading-relaxed font-body">
+                {data.education.map((item: any, idx: number) => (
+                  <li key={idx} className="border-b border-border-editorial/40 pb-3 last:border-0">
+                    <strong className="text-forest font-semibold block text-sm">{item.title}</strong>
+                    <span className="text-text-tertiary">{item.subtitle}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
+        </StaggerItem>
+
+        <StaggerItem>
+          <div className="border border-border-editorial/80 bg-warm-white/80 backdrop-blur-md p-8 rounded-xs space-y-6 hover:border-gold/60 transition-all duration-300 shadow-editorial hover:shadow-editorial-hover h-full flex flex-col justify-between">
+            <div className="space-y-6">
+              <div className="w-12 h-12 rounded-full bg-forest/10 flex items-center justify-center text-gold">
+                <Award className="w-6 h-6 text-gold" />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-forest">Fellowships &amp; Prizes</h3>
+              <ul className="space-y-4 text-xs text-text-secondary leading-relaxed font-body">
+                {data.fellowships.map((item: any, idx: number) => (
+                  <li key={idx} className="border-b border-border-editorial/40 pb-3 last:border-0">
+                    <strong className="text-forest font-semibold block text-sm">{item.title}</strong>
+                    <span className="text-text-tertiary">{item.subtitle}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </StaggerItem>
+
+        <StaggerItem>
+          <div className="border border-border-editorial/80 bg-warm-white/80 backdrop-blur-md p-8 rounded-xs space-y-6 hover:border-gold/60 transition-all duration-300 shadow-editorial hover:shadow-editorial-hover h-full flex flex-col justify-between">
+            <div className="space-y-6">
+              <div className="w-12 h-12 rounded-full bg-forest/10 flex items-center justify-center text-gold">
+                <Globe className="w-6 h-6 text-gold" />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-forest">Social Work</h3>
+              <ul className="space-y-4 text-xs text-text-secondary leading-relaxed font-body">
+                {data.socialWork.map((item: any, idx: number) => (
+                  <li key={idx} className="border-b border-border-editorial/40 pb-3 last:border-0">
+                    <strong className="text-forest font-semibold block text-sm">{item.title}</strong>
+                    <span className="text-text-tertiary">{item.subtitle}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </StaggerItem>
+      </StaggerContainer>
+
+      {/* ── 4. CHRONOLOGY TIMELINE ── */}
+      <section className="space-y-12">
+        <ScrollReveal variant="fadeUp" className="text-center space-y-2">
+          <h2 className="text-editorial-title font-heading text-forest">Timeline of Milestones</h2>
+        </ScrollReveal>
+
+        <StaggerContainer className="max-w-4xl mx-auto relative border-l-2 border-border-editorial pl-8 md:pl-12 space-y-12" staggerDelay={0.12}>
+          {data.timeline.map((event: any, idx: number) => (
+            <StaggerItem key={idx}>
+              <div className="relative group">
+                {/* Year Badge Node */}
+                <span className="absolute -left-[43px] md:-left-[59px] top-1.5 w-6 h-6 rounded-full bg-warm-white border-2 border-gold flex items-center justify-center shadow-sm" />
+
+                <div className="space-y-2 bg-warm-white/70 backdrop-blur-md p-6 md:p-8 rounded-xs border border-border-editorial/70 shadow-editorial group-hover:border-gold/60 transition-all duration-300">
+                  <span className="font-heading text-2xl font-bold text-gold">{event.year}</span>
+                  <h4 className="font-heading text-2xl font-medium text-forest leading-snug">
+                    {event.title}
+                  </h4>
+                  <p className="text-xs text-text-secondary leading-relaxed font-body">
+                    {event.description}
+                  </p>
+                </div>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </section>
     </div>
   );
 }
+
+

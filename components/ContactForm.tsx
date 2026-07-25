@@ -75,13 +75,15 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-soft-ivory/30 border border-border-editorial p-8 md:p-12 rounded-sm shadow-sm">
+    <div className="bg-warm-white/70 backdrop-blur-md border border-border-editorial p-8 md:p-12 rounded-xs shadow-editorial hover:shadow-editorial-hover transition-all duration-500 hover:border-gold/60">
       {status === "success" ? (
         <div className="text-center py-12 space-y-6 flex flex-col items-center">
-          <CheckCircle className="w-16 h-16 text-forest" />
+          <div className="w-16 h-16 rounded-full bg-forest/10 flex items-center justify-center text-forest">
+            <CheckCircle className="w-10 h-10 text-forest" />
+          </div>
           <div className="space-y-2">
             <h3 className="font-heading text-2xl font-bold text-forest">Message Sent Successfully</h3>
-            <p className="text-sm text-text-secondary max-w-sm mx-auto leading-relaxed">
+            <p className="text-sm text-text-secondary max-w-sm mx-auto leading-relaxed font-body">
               Thank you for reaching out. Your message has been logged, and we will get back to you shortly.
             </p>
           </div>
@@ -96,8 +98,8 @@ export default function ContactForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name */}
-            <div className="space-y-1">
-              <label htmlFor="name" className="text-[10px] uppercase tracking-wider font-semibold text-text-secondary">
+            <div className="space-y-1.5">
+              <label htmlFor="name" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-secondary font-body">
                 Your Name
               </label>
               <input
@@ -106,7 +108,7 @@ export default function ContactForm() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="form-input"
+                className="form-input rounded-xs"
                 placeholder="e.g. John Doe"
                 disabled={status === "submitting"}
               />
@@ -114,8 +116,8 @@ export default function ContactForm() {
             </div>
 
             {/* Email */}
-            <div className="space-y-1">
-              <label htmlFor="email" className="text-[10px] uppercase tracking-wider font-semibold text-text-secondary">
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-secondary font-body">
                 Email Address
               </label>
               <input
@@ -124,7 +126,7 @@ export default function ContactForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="form-input"
+                className="form-input rounded-xs"
                 placeholder="e.g. john@example.com"
                 disabled={status === "submitting"}
               />
@@ -133,8 +135,8 @@ export default function ContactForm() {
           </div>
 
           {/* Subject */}
-          <div className="space-y-1">
-            <label htmlFor="subject" className="text-[10px] uppercase tracking-wider font-semibold text-text-secondary">
+          <div className="space-y-1.5">
+            <label htmlFor="subject" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-secondary font-body">
               Subject
             </label>
             <input
@@ -143,7 +145,7 @@ export default function ContactForm() {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className="form-input"
+              className="form-input rounded-xs"
               placeholder="e.g. Lecture booking query"
               disabled={status === "submitting"}
             />
@@ -151,8 +153,8 @@ export default function ContactForm() {
           </div>
 
           {/* Message */}
-          <div className="space-y-1">
-            <label htmlFor="message" className="text-[10px] uppercase tracking-wider font-semibold text-text-secondary">
+          <div className="space-y-1.5">
+            <label htmlFor="message" className="text-[10px] uppercase tracking-[0.2em] font-semibold text-text-secondary font-body">
               Your Message
             </label>
             <textarea
@@ -161,7 +163,7 @@ export default function ContactForm() {
               rows={6}
               value={formData.message}
               onChange={handleChange}
-              className="form-input resize-none"
+              className="form-input resize-none rounded-xs"
               placeholder="Write your correspondence details..."
               disabled={status === "submitting"}
             />
@@ -169,7 +171,7 @@ export default function ContactForm() {
           </div>
 
           {status === "error" && (
-            <div className="flex items-center gap-2 text-xs text-red-700 bg-red-50 p-4 border border-red-200">
+            <div className="flex items-center gap-2 text-xs text-red-700 bg-red-50 p-4 border border-red-200 rounded-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -179,9 +181,9 @@ export default function ContactForm() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="btn-primary w-full justify-center"
+              className="btn-primary w-full justify-center group"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               <span>{status === "submitting" ? "Sending correspondence..." : "Submit Correspondence"}</span>
             </button>
           </div>

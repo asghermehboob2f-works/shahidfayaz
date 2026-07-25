@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ArrowLeft, Calendar, Clock, User, Link as LinkIcon } from "lucide-react";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -58,38 +59,38 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   return (
     <div className="max-w-4xl mx-auto px-6 md:px-8 py-16 space-y-12">
       {/* Back Button */}
-      <div>
+      <ScrollReveal variant="fadeUp">
         <Link
           href="/articles"
-          className="text-xs uppercase tracking-widest font-semibold text-text-secondary hover:text-forest inline-flex items-center gap-2 transition-colors duration-200"
+          className="text-xs uppercase tracking-[0.2em] font-semibold text-text-secondary hover:text-forest inline-flex items-center gap-2 transition-colors duration-200 group"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
           <span>Back to Essays</span>
         </Link>
-      </div>
+      </ScrollReveal>
 
       {/* Article Header */}
-      <header className="space-y-6">
+      <ScrollReveal variant="fadeUp" delay={0.1} className="space-y-6">
         {article.category && (
-          <span className="text-xs uppercase tracking-[0.2em] text-gold font-bold">
+          <span className="text-xs uppercase tracking-[0.25em] text-gold font-bold">
             {article.category.name}
           </span>
         )}
-        <h1 className="font-heading text-3.5xl md:text-5xl font-medium text-forest leading-tight">
+        <h1 className="font-heading text-4xl md:text-5.5xl font-medium text-forest leading-tight">
           {article.title}
         </h1>
-        <p className="text-editorial-lead text-text-secondary">
+        <p className="text-editorial-lead text-text-secondary leading-relaxed font-light">
           {article.excerpt}
         </p>
 
         {/* Author / Date / Time */}
-        <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border-editorial text-xs text-text-tertiary">
+        <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-border-editorial text-xs text-text-tertiary font-body">
           <span className="flex items-center gap-1.5 font-semibold text-forest">
-            <User className="w-3.5 h-3.5" />
+            <User className="w-3.5 h-3.5 text-gold" />
             <span>By {article.user?.name || "Shahid Fayaz"}</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5" />
+            <Calendar className="w-3.5 h-3.5 text-gold" />
             <span>
               {article.publishedAt
                 ? new Date(article.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
@@ -97,50 +98,52 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
             </span>
           </span>
           <span className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="w-3.5 h-3.5 text-gold" />
             <span>{article.readingTime || "5"} min read</span>
           </span>
         </div>
-      </header>
+      </ScrollReveal>
 
       {/* Cover Image */}
-      <div className="aspect-[16/9] w-full overflow-hidden shadow-editorial bg-soft-ivory">
+      <ScrollReveal variant="blurIn" delay={0.2} className="aspect-[16/9] w-full overflow-hidden shadow-editorial-hover bg-soft-ivory rounded-xs border border-border-editorial/60 relative group">
         <img
           src={article.coverImage || "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800"}
           alt={article.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
         />
-      </div>
+      </ScrollReveal>
 
       {/* Main Body Content */}
-      <article
-        className="prose-editorial text-editorial-body max-w-none"
-        dangerouslySetInnerHTML={{ __html: article.body }}
-      />
+      <ScrollReveal variant="fadeUp" delay={0.25}>
+        <article
+          className="prose-editorial text-editorial-body max-w-none"
+          dangerouslySetInnerHTML={{ __html: article.body }}
+        />
+      </ScrollReveal>
 
       {/* Social Share & Tags */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-6 border-y border-border-editorial gap-4">
+      <ScrollReveal variant="fadeUp" className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-6 border-y border-border-editorial gap-4">
         <span className="text-xs text-text-tertiary font-body">
           Published under <strong className="text-forest">{article.category?.name || "Essays"}</strong>
         </span>
-        <div className="flex items-center space-x-3 text-text-secondary">
+        <div className="flex items-center space-x-3 text-text-secondary font-body">
           <span className="text-xs font-semibold uppercase tracking-wider text-text-tertiary pr-2">Share:</span>
-          <button className="hover:text-forest transition-colors" aria-label="Share Facebook">
+          <button className="hover:text-forest transition-colors p-1.5 hover:bg-soft-ivory rounded-full" aria-label="Share Facebook">
             <FacebookIcon className="w-4 h-4" />
           </button>
-          <button className="hover:text-forest transition-colors" aria-label="Share Twitter">
+          <button className="hover:text-forest transition-colors p-1.5 hover:bg-soft-ivory rounded-full" aria-label="Share Twitter">
             <TwitterIcon className="w-4 h-4" />
           </button>
-          <button className="hover:text-forest transition-colors" aria-label="Copy Link">
+          <button className="hover:text-forest transition-colors p-1.5 hover:bg-soft-ivory rounded-full" aria-label="Copy Link">
             <LinkIcon className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Related Essays */}
       {relatedArticles.length > 0 && (
-        <section className="space-y-8 pt-12">
-          <h3 className="text-xs uppercase tracking-widest font-bold text-forest">Related Essays</h3>
+        <ScrollReveal variant="fadeUp" className="space-y-8 pt-12">
+          <h3 className="text-xs uppercase tracking-[0.25em] font-bold text-forest">Related Essays</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {relatedArticles.map((relArt) => (
               <Link
@@ -148,25 +151,25 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                 href={`/articles/${relArt.slug}`}
                 className="group space-y-3 block"
               >
-                <div className="aspect-[16/10] overflow-hidden bg-soft-ivory shadow-editorial">
+                <div className="aspect-[16/10] overflow-hidden bg-soft-ivory shadow-editorial rounded-xs border border-border-editorial/60">
                   <img
                     src={relArt.coverImage || "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800"}
                     alt={relArt.title}
-                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-heading text-lg font-semibold text-forest leading-snug group-hover:text-gold transition-colors duration-200 line-clamp-2">
                     {relArt.title}
                   </h4>
-                  <p className="text-[10px] text-text-tertiary">
+                  <p className="text-[10px] text-text-tertiary font-body">
                     {relArt.readingTime || "5"} min read
                   </p>
                 </div>
               </Link>
             ))}
           </div>
-        </section>
+        </ScrollReveal>
       )}
     </div>
   );

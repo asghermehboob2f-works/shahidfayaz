@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import AmbientBackground from "@/components/AmbientBackground";
+import CustomCursor from "@/components/CustomCursor";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,7 +66,6 @@ export default async function RootLayout({
     };
   } catch (error) {
     console.error("Layout load error:", error);
-    // Fallback menu in case database connection fails during initial build
     navItems = [
       { id: 1, label: "Home", url: "/" },
       { id: 2, label: "Books", url: "/books" },
@@ -78,7 +79,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="h-full scroll-smooth">
-      <body className="min-h-full flex flex-col bg-warm-white text-text-primary overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-warm-white text-text-primary overflow-x-hidden relative selection:bg-gold selection:text-white">
+        <CustomCursor />
+        <AmbientBackground />
         <SmoothScroll>
           <Navbar navItems={navItems} siteName={siteName} />
           <main className="flex-grow pt-24 md:pt-28">{children}</main>

@@ -1,6 +1,7 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
-import { ArrowUpRight, FolderOpen, Calendar, Tag } from "lucide-react";
+import { ArrowUpRight, Calendar, Tag, Sparkles } from "lucide-react";
+import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 
 export const revalidate = 0;
 
@@ -32,76 +33,74 @@ export default async function WorksPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 space-y-16">
-      <div className="space-y-4 max-w-2xl">
-        <span className="section-label">Contributions</span>
-        <h1 className="text-editorial-title font-heading text-forest">
+    <div className="w-full px-6 md:px-10 lg:px-12 py-16 md:py-24 space-y-16">
+      <ScrollReveal variant="editorialReveal" className="space-y-4 max-w-3xl border-b border-border-editorial pb-8">
+        <h1 className="text-editorial-hero font-heading text-forest font-medium">
           Academic Research &amp; Projects
         </h1>
-        <p className="text-text-secondary text-sm leading-relaxed">
+        <p className="text-editorial-lead text-text-secondary font-light">
           Explore research monographs, peer-reviewed studies, mapping archives, and international policy papers authored by Shahid Fayaz.
         </p>
-      </div>
+      </ScrollReveal>
 
       {Object.keys(groupedWorks).length > 0 ? (
-        <div className="space-y-16">
+        <div className="space-y-20">
           {Object.entries(groupedWorks).map(([type, items]: [string, any]) => (
-            <div key={type} className="space-y-6">
-              <h2 className="font-heading text-xl font-bold text-forest border-b border-border-editorial pb-2 uppercase tracking-wider">
+            <ScrollReveal key={type} variant="fadeUp" className="space-y-8">
+              <h2 className="font-heading text-2xl font-bold text-forest border-b border-border-editorial pb-4 uppercase tracking-[0.2em]">
                 {typeLabels[type] || type}
               </h2>
 
-              <div className="flex flex-col divide-y divide-border-editorial">
+              <StaggerContainer className="flex flex-col gap-6" staggerDelay={0.1}>
                 {items.map((work: any) => (
-                  <div
-                    key={work.id}
-                    className="work-item py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-4 text-[10px] text-text-tertiary">
-                        {work.date && (
-                          <span className="flex items-center gap-1 font-body">
-                            <Calendar className="w-3.5 h-3.5" />
-                            <span>{new Date(work.date).toLocaleDateString("en-US", { year: "numeric", month: "long" })}</span>
-                          </span>
+                  <StaggerItem key={work.id}>
+                    <div className="bg-warm-white border border-border-editorial p-6 md:p-8 rounded-xs shadow-sm hover:shadow-editorial-hover transition-all duration-300 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-4 text-[10px] text-text-tertiary font-body">
+                          {work.date && (
+                            <span className="flex items-center gap-1.5">
+                              <Calendar className="w-3.5 h-3.5 text-gold" />
+                              <span>{new Date(work.date).toLocaleDateString("en-US", { year: "numeric", month: "long" })}</span>
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-heading text-xl md:text-2xl font-medium text-forest group-hover:text-gold transition-colors duration-300">
+                          {work.title}
+                        </h3>
+                        <p className="text-xs text-text-secondary max-w-3xl leading-relaxed font-body font-light">
+                          {work.description}
+                        </p>
+                        {work.tags && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {work.tags.split(",").map((tag: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="text-[9px] font-bold tracking-[0.2em] text-gold uppercase bg-gold/10 border border-gold/30 px-3 py-1 rounded-xs flex items-center gap-1.5"
+                              >
+                                <Tag className="w-2.5 h-2.5" />
+                                <span>{tag.trim()}</span>
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
-                      <h3 className="font-heading text-xl font-medium text-forest">
-                        {work.title}
-                      </h3>
-                      <p className="text-xs text-text-secondary max-w-2xl leading-relaxed">
-                        {work.description}
-                      </p>
-                      {work.tags && (
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          {work.tags.split(",").map((tag: string, idx: number) => (
-                            <span
-                              key={idx}
-                              className="text-[9px] font-semibold tracking-widest text-gold uppercase bg-soft-ivory border border-border-editorial px-2 py-0.5 rounded-sm flex items-center gap-1"
-                            >
-                              <Tag className="w-2.5 h-2.5" />
-                              <span>{tag.trim()}</span>
-                            </span>
-                          ))}
-                        </div>
+
+                      {work.externalLink && (
+                        <a
+                          href={work.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-secondary group text-xs shrink-0 py-2.5 px-5"
+                        >
+                          <span>View Contribution</span>
+                          <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </a>
                       )}
                     </div>
-
-                    {work.externalLink && (
-                      <a
-                        href={work.externalLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs font-bold tracking-wider text-forest hover:text-gold uppercase inline-flex items-center gap-1 mt-2 md:mt-0 shrink-0 border border-border-editorial px-4 py-2 hover:border-forest transition-colors bg-white"
-                      >
-                        <span>View Contribution</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                  </div>
+                  </StaggerItem>
                 ))}
-              </div>
-            </div>
+              </StaggerContainer>
+            </ScrollReveal>
           ))}
         </div>
       ) : (
@@ -112,3 +111,4 @@ export default async function WorksPage() {
     </div>
   );
 }
+

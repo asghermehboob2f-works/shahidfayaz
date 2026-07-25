@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
-import { Save, CheckCircle, AlertCircle, Eye, EyeOff, ChevronDown, ChevronUp } from "lucide-react";
+import { Save, CheckCircle, AlertCircle, Eye, EyeOff, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { updateHomepageSection } from "@/app/admin/dashboard/settings/actions";
 import ImageUpload from "@/components/ImageUpload";
+
+interface HeroStat {
+  value: string;
+  label: string;
+}
 
 interface HomepageSection {
   id: number;
@@ -14,6 +19,7 @@ interface HomepageSection {
   image: string | null;
   buttonText: string | null;
   buttonLink: string | null;
+  extraData?: string | null;
   isVisible: boolean;
 }
 
@@ -21,12 +27,83 @@ interface SectionsFormProps {
   initialSections: HomepageSection[];
 }
 
+const defaultStats: HeroStat[] = [
+  { value: "03", label: "Published Books" },
+  { value: "LSE", label: "Doctoral Fellow" },
+  { value: "12+", label: "Global Honors" },
+];
+
+const defaultMarquee: string[] = [
+  "POST-COLONIAL PHILOSOPHY",
+  "GEOPOLITICAL MEMORY",
+  "SUB-HIMALAYAN ARCHIVES",
+  "LITERARY SOVEREIGNTY",
+  "THE ANATOMY OF SILENCES",
+];
+
 export default function SectionsForm({ initialSections }: SectionsFormProps) {
   const [sections, setSections] = useState<HomepageSection[]>(initialSections);
   const [openSection, setOpenSection] = useState<string | null>("hero");
   const [isPending, startTransition] = useTransition();
   const [successKey, setSuccessKey] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const heroSec = initialSections.find((s) => s.key === "hero");
+  const initialHeroStats = (() => {
+    if (!heroSec?.extraData) return defaultStats;
+    try {
+      const parsed = JSON.parse(heroSec.extraData);
+      if (Array.isArray(parsed?.stats)) return parsed.stats;
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    return defaultStats;
+  })();
+
+  const initialHeroMarquee = (() => {
+    if (!heroSec?.extraData) return defaultMarquee;
+    try {
+      const parsed = JSON.parse(heroSec.extraData);
+      if (Array.isArray(parsed?.marquee)) return parsed.marquee;
+    } catch (e) {}
+    return defaultMarquee;
+  })();
+
+  const [heroStats, setHeroStats] = useState<HeroStat[]>(initialHeroStats);
+  const [heroMarquee, setHeroMarquee] = useState<string[]>(initialHeroMarquee);
+
+  const handleStatChange = (index: number, field: "value" | "label", val: string) => {
+    setHeroStats((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: val };
+      return copy;
+    });
+  };
+
+  const handleAddStat = () => {
+    if (heroStats.length < 5) {
+      setHeroStats((prev) => [...prev, { value: "01", label: "New Honor" }]);
+    }
+  };
+
+  const handleRemoveStat = (index: number) => {
+    setHeroStats((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleMarqueeChange = (index: number, val: string) => {
+    setHeroMarquee((prev) => {
+      const copy = [...prev];
+      copy[index] = val;
+      return copy;
+    });
+  };
+
+  const handleAddMarqueeItem = () => {
+    setHeroMarquee((prev) => [...prev, "NEW PHILOSOPHICAL TOPIC"]);
+  };
+
+  const handleRemoveMarqueeItem = (index: number) => {
+    setHeroMarquee((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleChange = (key: string, field: keyof HomepageSection, value: any) => {
     setSections((prev) =>
@@ -51,6 +128,7 @@ export default function SectionsForm({ initialSections }: SectionsFormProps) {
         image: section.image || undefined,
         buttonText: section.buttonText || undefined,
         buttonLink: section.buttonLink || undefined,
+        extraData: key === "hero" ? JSON.stringify({ stats: heroStats, marquee: heroMarquee }) : undefined,
         isVisible: section.isVisible,
       });
 
@@ -222,6 +300,120 @@ export default function SectionsForm({ initialSections }: SectionsFormProps) {
                           className="form-input text-xs resize-none"
                           disabled={isPending}
                         />
+                      </div>
+                    )}
+
+                    {/* Hero Accolades / Stats Controls */}
+                    {section.key === "hero" && (
+                      <div className="md:col-span-2 space-y-3 pt-4 border-t border-border-editorial">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label className="text-[11px] uppercase tracking-wider font-bold text-forest block">
+                              Hero Accolades Bar (Stats)
+                            </label>
+                            <p className="text-[10px] text-text-tertiary">
+                              Customize the accolade stats displayed on the Hero section of the homepage.
+                            </p>
+                          </div>
+                          {heroStats.length < 5 && (
+                            <button
+                              type="button"
+                              onClick={handleAddStat}
+                              className="btn-secondary py-1 px-3 text-[10px] flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="w-3 h-3 text-gold" />
+                              <span>Add Stat</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                          {heroStats.map((stat, idx) => (
+                            <div key={idx} className="bg-white border border-border-editorial p-3 rounded-xs space-y-2 relative">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[9px] uppercase font-bold text-text-tertiary">Stat #{idx + 1}</span>
+                                {heroStats.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveStat(idx)}
+                                    className="text-red-500 hover:text-red-700 p-0.5 cursor-pointer"
+                                    title="Remove Stat"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-semibold text-text-secondary uppercase">Value / Code (e.g. 03, LSE, 12+)</label>
+                                <input
+                                  type="text"
+                                  value={stat.value}
+                                  onChange={(e) => handleStatChange(idx, "value", e.target.value)}
+                                  className="form-input text-xs py-1 px-2 font-bold font-heading"
+                                  disabled={isPending}
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-semibold text-text-secondary uppercase">Label / Title</label>
+                                <input
+                                  type="text"
+                                  value={stat.label}
+                                  onChange={(e) => handleStatChange(idx, "label", e.target.value)}
+                                  className="form-input text-xs py-1 px-2"
+                                  disabled={isPending}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Hero Running Marquee Ticker Controls */}
+                        <div className="space-y-3 pt-4 border-t border-border-editorial">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <label className="text-[11px] uppercase tracking-wider font-bold text-forest block">
+                                Hero Running Marquee Ticker Items
+                              </label>
+                              <p className="text-[10px] text-text-tertiary">
+                                Customize the continuous sliding text phrases displayed across the bottom of the Hero banner.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleAddMarqueeItem}
+                              className="btn-secondary py-1 px-3 text-[10px] flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="w-3 h-3 text-gold" />
+                              <span>Add Tag Phrase</span>
+                            </button>
+                          </div>
+
+                          <div className="space-y-2 pt-1">
+                            {heroMarquee.map((item, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                <span className="text-[10px] font-mono text-text-tertiary w-6 shrink-0">#{idx + 1}</span>
+                                <input
+                                  type="text"
+                                  value={item}
+                                  onChange={(e) => handleMarqueeChange(idx, e.target.value)}
+                                  className="form-input text-xs py-1 px-2.5 uppercase font-medium tracking-wider flex-1"
+                                  disabled={isPending}
+                                  placeholder="E.G. SUB-HIMALAYAN ARCHIVES"
+                                />
+                                {heroMarquee.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveMarqueeItem(idx)}
+                                    className="text-red-500 hover:text-red-700 p-1 cursor-pointer shrink-0"
+                                    title="Remove Tag"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
