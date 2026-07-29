@@ -18,6 +18,7 @@ interface Book {
   pages: number | null;
   format: string | null;
   publisher: string | null;
+  publicationDate?: string | Date | null;
   purchaseLinks?: { id: number; storeName: string; url: string; priceLabel: string | null }[];
 }
 
@@ -41,6 +42,7 @@ export default function BooksManager({ books }: BooksManagerProps) {
     pages: "",
     format: "Hardcover",
     publisher: "",
+    publicationDate: "",
     purchaseLinks: [] as { storeName: string; url: string; priceLabel: string }[],
   });
 
@@ -60,6 +62,7 @@ export default function BooksManager({ books }: BooksManagerProps) {
       pages: "",
       format: "Hardcover",
       publisher: "",
+      publicationDate: "",
       purchaseLinks: [],
     });
     setError("");
@@ -68,6 +71,14 @@ export default function BooksManager({ books }: BooksManagerProps) {
 
   const handleStartEdit = (book: Book) => {
     setEditingId(book.id);
+    let formattedDate = "";
+    if (book.publicationDate) {
+      const d = new Date(book.publicationDate);
+      if (!isNaN(d.getTime())) {
+        formattedDate = d.toISOString().split("T")[0];
+      }
+    }
+
     setFormData({
       title: book.title,
       slug: book.slug,
@@ -80,6 +91,7 @@ export default function BooksManager({ books }: BooksManagerProps) {
       pages: book.pages ? String(book.pages) : "",
       format: book.format || "Hardcover",
       publisher: book.publisher || "",
+      publicationDate: formattedDate,
       purchaseLinks: book.purchaseLinks?.map((link) => ({
         storeName: link.storeName,
         url: link.url,
@@ -150,6 +162,7 @@ export default function BooksManager({ books }: BooksManagerProps) {
         pages: formData.pages ? parseInt(formData.pages, 10) : undefined,
         format: formData.format,
         publisher: formData.publisher,
+        publicationDate: formData.publicationDate || null,
         purchaseLinks: formData.purchaseLinks,
       };
 
@@ -211,9 +224,14 @@ export default function BooksManager({ books }: BooksManagerProps) {
               </span>
               <h4 className="font-heading text-lg font-semibold text-forest truncate">{book.title}</h4>
               <p className="text-xs text-text-secondary line-clamp-2">{book.description}</p>
-              <div className="flex gap-4 text-[10px] text-text-tertiary font-body">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-text-tertiary font-body">
                 <span>Pages: {book.pages || "—"}</span>
                 <span>Price: ${book.price || "—"}</span>
+                {book.publicationDate && (
+                  <span>
+                    Published: {new Date(book.publicationDate).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -367,6 +385,16 @@ export default function BooksManager({ books }: BooksManagerProps) {
                     onChange={handleChange}
                     className="form-input text-xs"
                     placeholder="HarperCollins"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase tracking-wider font-semibold text-text-secondary">Publication Date</label>
+                  <input
+                    type="date"
+                    name="publicationDate"
+                    value={formData.publicationDate}
+                    onChange={handleChange}
+                    className="form-input text-xs"
                   />
                 </div>
               </div>

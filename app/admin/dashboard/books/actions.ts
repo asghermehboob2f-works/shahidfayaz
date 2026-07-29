@@ -37,6 +37,7 @@ export async function createBook(data: {
   pages?: number;
   format?: string;
   publisher?: string;
+  publicationDate?: string | Date | null;
   purchaseLinks?: PurchaseLinkData[];
 }) {
   try {
@@ -54,6 +55,7 @@ export async function createBook(data: {
         pages: data.pages || null,
         format: data.format || "Hardcover",
         publisher: data.publisher || null,
+        publicationDate: data.publicationDate ? new Date(data.publicationDate) : null,
         isPublished: true,
         purchaseLinks: {
           create: data.purchaseLinks?.map((link, index) => ({
@@ -89,6 +91,7 @@ export async function updateBook(
     pages?: number;
     format?: string;
     publisher?: string;
+    publicationDate?: string | Date | null;
     purchaseLinks?: PurchaseLinkData[];
   }
 ) {
@@ -108,6 +111,7 @@ export async function updateBook(
         pages: data.pages !== undefined ? data.pages : null,
         format: data.format || "Hardcover",
         publisher: data.publisher || null,
+        publicationDate: data.publicationDate ? new Date(data.publicationDate) : null,
       },
     });
 
