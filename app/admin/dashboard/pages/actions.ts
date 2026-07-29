@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slug";
 
 export async function deletePage(id: number) {
   try {
@@ -29,17 +30,18 @@ export async function createPage(data: {
   metaDescription?: string;
 }) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const newPage = await prisma.page.create({
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         body: data.body,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
         isPublished: true,
       },
     });
-    revalidatePath(`/${data.slug}`);
+    revalidatePath(`/${cleanSlug}`);
     revalidatePath("/admin/dashboard/pages");
     return { success: true, page: newPage };
   } catch (error) {
@@ -59,11 +61,12 @@ export async function updatePage(
   }
 ) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const updatedPage = await prisma.page.update({
       where: { id },
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         body: data.body,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,

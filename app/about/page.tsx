@@ -91,17 +91,17 @@ export default async function AboutPage() {
       {/* ── 2. PHILOSOPHICAL QUOTE CARD ── */}
       {(data.quoteText || data.quoteAuthor) && (
         <ScrollReveal variant="blurIn">
-          <section className="bg-obsidian text-white py-24 px-8 text-center rounded-xs max-w-5xl mx-auto border border-gold/30 shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 philosophy-dots opacity-25 pointer-events-none" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
+          <section className="bg-obsidian text-white py-12 md:py-16 px-6 md:px-10 text-center rounded-xs max-w-4xl mx-auto border border-gold/30 shadow-xl relative overflow-hidden">
+            <div className="absolute inset-0 philosophy-dots opacity-20 pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent" />
 
             {data.quoteText && (
-              <blockquote className="font-heading text-2xl md:text-4xl italic leading-relaxed text-warm-white font-light max-w-4xl mx-auto">
+              <blockquote className="font-heading text-lg sm:text-xl md:text-2xl italic leading-relaxed text-warm-white font-light max-w-3xl mx-auto">
                 {data.quoteText}
               </blockquote>
             )}
             {data.quoteAuthor && (
-              <div className="mt-8 text-xs font-bold uppercase tracking-[0.3em] text-gold font-body">
+              <div className="mt-5 text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-gold font-body">
                 — {data.quoteAuthor}
               </div>
             )}

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slug";
 
 interface PurchaseLinkData {
   storeName: string;
@@ -39,10 +40,11 @@ export async function createBook(data: {
   purchaseLinks?: PurchaseLinkData[];
 }) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const newBook = await prisma.book.create({
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         subtitle: data.subtitle || null,
         description: data.description || null,
         coverImage: data.coverImage || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600",
@@ -91,11 +93,12 @@ export async function updateBook(
   }
 ) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const updatedBook = await prisma.book.update({
       where: { id },
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         subtitle: data.subtitle || null,
         description: data.description || null,
         coverImage: data.coverImage || null,

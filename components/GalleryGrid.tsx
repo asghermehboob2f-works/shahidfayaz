@@ -123,9 +123,9 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
                   <Eye className="w-6 h-6" />
                 </span>
               </div>
-              {/* Event Name Badge */}
-              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold text-forest border border-border-editorial/40 shadow-xs">
-                {item.galleryTitle}
+              {/* Photo Title Badge */}
+              <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-forest border border-border-editorial/40 shadow-xs max-w-[85%] truncate">
+                {item.altText || item.caption || item.galleryTitle}
               </div>
             </motion.div>
           ))}
@@ -153,6 +153,9 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
                 <span className="text-[10px] uppercase tracking-[0.25em] text-gold font-bold">
                   {activeMedia.galleryTitle}
                 </span>
+                <h3 className="text-base text-white font-heading font-medium">
+                  {activeMedia.altText || activeMedia.caption || activeMedia.galleryTitle}
+                </h3>
                 <p className="text-xs text-zinc-400">
                   {lightboxIndex + 1} / {filteredMedia.length}
                 </p>
@@ -183,7 +186,7 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4 }}
                   src={activeMedia.filePath}
-                  alt={activeMedia.altText || "Lightbox Image"}
+                  alt={activeMedia.altText || activeMedia.caption || "Lightbox Image"}
                   className="max-h-[70vh] max-w-full object-contain shadow-2xl rounded-xs"
                 />
               </div>
@@ -200,7 +203,7 @@ export default function GalleryGrid({ galleries }: GalleryGridProps) {
             {/* Footer Caption */}
             <div className="text-center max-w-2xl mx-auto pb-4">
               <p className="text-sm text-zinc-200 leading-relaxed font-body font-light">
-                {activeMedia.caption || "Shahid Fayaz Literary Archives"}
+                {activeMedia.caption || activeMedia.altText || "Shahid Fayaz Literary Archives"}
               </p>
             </div>
           </motion.div>

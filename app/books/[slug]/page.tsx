@@ -11,21 +11,47 @@ interface BookPageProps {
   params: Promise<{ slug: string }>;
 }
 
+import { slugify } from "@/lib/slug";
+
 export default async function BookDetailPage({ params }: BookPageProps) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug).trim();
+  const normalizedSlug = slugify(decodedSlug);
 
   let book: any = null;
   let relatedBooks: any[] = [];
 
   try {
-    book = await prisma.book.findUnique({
-      where: { slug },
+    book = await prisma.book.findFirst({
+      where: {
+        OR: [
+          { slug: decodedSlug },
+          { slug: normalizedSlug },
+          { slug: decodedSlug.toLowerCase() },
+          { slug: normalizedSlug.toLowerCase() },
+        ],
+      },
       include: {
         category: true,
         reviews: true,
         purchaseLinks: true,
       },
     });
+
+    if (!book) {
+      const allBooks = await prisma.book.findMany({
+        include: {
+          category: true,
+          reviews: true,
+          purchaseLinks: true,
+        },
+      });
+      book = allBooks.find(
+        (b) =>
+          slugify(b.slug) === normalizedSlug ||
+          slugify(b.title) === normalizedSlug
+      );
+    }
 
     if (book) {
       relatedBooks = await prisma.book.findMany({

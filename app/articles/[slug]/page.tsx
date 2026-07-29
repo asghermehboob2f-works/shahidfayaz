@@ -23,20 +23,45 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
+import { slugify } from "@/lib/slug";
+
 export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug).trim();
+  const normalizedSlug = slugify(decodedSlug);
 
   let article: any = null;
   let relatedArticles: any[] = [];
 
   try {
-    article = await prisma.article.findUnique({
-      where: { slug },
+    article = await prisma.article.findFirst({
+      where: {
+        OR: [
+          { slug: decodedSlug },
+          { slug: normalizedSlug },
+          { slug: decodedSlug.toLowerCase() },
+          { slug: normalizedSlug.toLowerCase() },
+        ],
+      },
       include: {
         category: true,
         user: true,
       },
     });
+
+    if (!article) {
+      const allArticles = await prisma.article.findMany({
+        include: {
+          category: true,
+          user: true,
+        },
+      });
+      article = allArticles.find(
+        (a) =>
+          slugify(a.slug) === normalizedSlug ||
+          slugify(a.title) === normalizedSlug
+      );
+    }
 
     if (article) {
       relatedArticles = await prisma.article.findMany({

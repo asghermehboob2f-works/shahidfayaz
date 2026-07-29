@@ -78,8 +78,11 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className="h-full scroll-smooth">
-      <body className="min-h-full flex flex-col bg-warm-white text-text-primary overflow-x-hidden relative selection:bg-gold selection:text-white">
+    <html lang="en" className="h-full scroll-smooth" suppressHydrationWarning>
+      <body
+        className="min-h-full flex flex-col bg-warm-white text-text-primary overflow-x-hidden relative selection:bg-gold selection:text-white"
+        suppressHydrationWarning
+      >
         <CustomCursor />
         <AmbientBackground />
         <SmoothScroll>

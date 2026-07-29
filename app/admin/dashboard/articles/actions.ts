@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slug";
 
 export async function deleteArticle(id: number) {
   try {
@@ -27,6 +28,7 @@ export async function createArticle(data: {
   readingTime?: number;
 }) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     // Fetch default admin user
     const admin = await prisma.user.findFirst({
       where: { role: "admin" },
@@ -39,7 +41,7 @@ export async function createArticle(data: {
     const newArticle = await prisma.article.create({
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         excerpt: data.excerpt || null,
         body: data.body || "",
         coverImage: data.coverImage || "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800",
@@ -72,11 +74,12 @@ export async function updateArticle(
   }
 ) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const updatedArticle = await prisma.article.update({
       where: { id },
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         excerpt: data.excerpt || null,
         body: data.body || "",
         coverImage: data.coverImage || null,

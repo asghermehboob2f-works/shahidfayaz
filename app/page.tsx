@@ -271,21 +271,21 @@ export default async function HomePage() {
 
       {/* ── 4. DARK ROOM PHILOSOPHICAL ANCHOR (QUOTE ROOM) ── */}
       {showQuote && (
-        <section className="bg-obsidian text-white py-32 relative overflow-hidden shadow-2xl border-y border-gold/30">
-          {/* Giant Quote Watermark Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[22rem] text-gold/5 font-bold pointer-events-none select-none">
+        <section className="bg-obsidian text-white py-12 md:py-16 relative overflow-hidden shadow-xl border-y border-gold/30">
+          {/* Subtle Quote Watermark Background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[10rem] md:text-[14rem] text-gold/5 font-bold pointer-events-none select-none leading-none">
             “
           </div>
-          <div className="absolute inset-0 philosophy-dots opacity-25 pointer-events-none" />
+          <div className="absolute inset-0 philosophy-dots opacity-20 pointer-events-none" />
 
-          <ScrollReveal variant="blurIn" className="max-w-5xl mx-auto px-6 text-center space-y-10 relative z-10">
-            <blockquote className="font-heading text-3xl md:text-5xl italic leading-relaxed text-warm-white font-light max-w-4xl mx-auto tracking-wide">
+          <ScrollReveal variant="blurIn" className="max-w-3xl mx-auto px-6 text-center space-y-4 md:space-y-5 relative z-10">
+            <blockquote className="font-heading text-lg sm:text-xl md:text-2xl lg:text-3xl italic leading-relaxed text-warm-white font-light tracking-wide">
               {quoteContent}
             </blockquote>
 
-            <div className="w-20 h-[1.5px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto" />
+            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto opacity-80" />
 
-            <cite className="block text-xs uppercase tracking-[0.3em] font-bold text-gold not-italic font-body">
+            <cite className="block text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-gold not-italic font-body">
               — {quoteTitle}
             </cite>
           </ScrollReveal>

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { slugify } from "@/lib/slug";
 
 export async function deleteWork(id: number) {
   try {
@@ -27,10 +28,11 @@ export async function createWork(data: {
   tags?: string;
 }) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const newWork = await prisma.work.create({
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         type: data.type || "research",
         description: data.description || null,
         externalLink: data.externalLink || null,
@@ -61,11 +63,12 @@ export async function updateWork(
   }
 ) {
   try {
+    const cleanSlug = slugify(data.slug || data.title);
     const updatedWork = await prisma.work.update({
       where: { id },
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: cleanSlug,
         type: data.type,
         description: data.description || null,
         externalLink: data.externalLink || null,
